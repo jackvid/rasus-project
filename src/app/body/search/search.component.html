@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="locationForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group">
+          <label for="location-name">Location</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            name="location-name"
+            formControlName="location-name">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="locationForm.invalid">Search</button>
+    </form> 
+  </div>
+</div>
+
+
