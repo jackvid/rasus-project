@@ -8,7 +8,7 @@ import { Coordinates } from "./coordinates.model";
 export class DataStorageService {
     filterData: RouteData[] = []; 
     array: Coordinates[] = [];
-    RouteMap : Map<number, Coordinates[]> = new Map<number, Coordinates[]>();
+    routeMap : Map<number, Coordinates[]> = new Map<number, Coordinates[]>();
     constructor(private http: Http) {}
 
     getRoutes() {
@@ -30,65 +30,50 @@ export class DataStorageService {
             )
         );
     }
-    filterRoutes(dateStart, dateEnd,routesData){
+
+    filterRoutes(dateStart, dateEnd, routesData){
         var end=false;
-        
-        
         dateStart=new Date(dateStart);
+        
         if(dateEnd!=null){
-          end=true;
-          dateEnd=new Date(dateEnd);
+            end=true;
+            dateEnd=new Date(dateEnd);
         }
        
         for(let d in routesData){
-          var date= new Date(routesData[d].timestamp);
-          if(end==false){
-           if(dateStart.toDateString()==date.toDateString()){
-             //console.log(date);
-              this.filterData.push(routesData[d]);
-              }
+            var date= new Date(routesData[d].timestamp);
+            if(end==false){
+                if(dateStart.toDateString()==date.toDateString()) {
+                    this.filterData.push(routesData[d]);
+                }
+            } else {
+                if((date >= dateStart && date<=dateEnd)){
+                    this.filterData.push(routesData[d]);
+                }
             }
-          else{
-            if((date >= dateStart && date<=dateEnd)){
-            // console.log(date);
-              this.filterData.push(routesData[d]);
-              }
-    
-          }
-       
         }
         this.mapRoutes();
     }
-    mapRoutes(){
 
+    mapRoutes(){
         for(let r in this.filterData){
-        
-            if(!this.RouteMap.has(this.filterData[r].routeId)){
-               
                 var lon=this.filterData[r].location.longitude;
                 var la=this.filterData[r].location.latitude;
-              
-                /*const ru: Route ={long: lon, lat:la};
-               
-                array.push(ru);*/
+            if(!this.routeMap.has(this.filterData[r].routeId)){
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
-                console.log(this.array[0].longitude+ "DONEEE");
-                this.RouteMap.set(this.filterData[r].routeId,this.array);
-            }else{
-                console.log('------USao sam tu-------');
-                let array= this.RouteMap.get(this.filterData[r].routeId);
-                var lon=this.filterData[r].location.longitude;
-                var la=this.filterData[r].location.latitude;
-                //const ru: Route ={long: lon, lat:la};
+                console.log(this.filterData[r].routeId + " : DONEEE");
+                this.routeMap.set(this.filterData[r].routeId, this.array);
+            } else {
+                console.log('------Usao sam tu-------\n Route Id je: ' + this.filterData[r].routeId);
+                this.array= this.routeMap.get(this.filterData[r].routeId);
                 let coordinates = new Coordinates(lon, la);
-                array.push(coordinates);
-                //array.push(ru);
-                this.RouteMap.set(this.filterData[r].routeId,array);
+                this.array.push(coordinates);
+                this.routeMap.set(this.filterData[r].routeId, this.array);
             }
-
+            this.array = [];
         }
-       return this.RouteMap;
-
+        console.log(this.routeMap)
+        return this.routeMap;
     }
 }
