@@ -48,6 +48,7 @@ export class MapComponent implements OnInit {
         zoom: 10
       })
     });
+    
     //ispisuje  mi kordinate
     /*this.map.on('click', function (args) {
       console.log(args.coordinate);
