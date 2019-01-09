@@ -10,6 +10,9 @@ import { MapComponent } from './body/map/map.component';
 import { SearchComponent } from './body/search/search.component';
 import { DataStorageService } from './shared/data-storage.service';
 
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +24,8 @@ import { DataStorageService } from './shared/data-storage.service';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    HttpModule
+    HttpModule,
+    LeafletModule.forRoot()
   ],
   providers: [ DataStorageService ],
   bootstrap: [AppComponent]
