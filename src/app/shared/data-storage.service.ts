@@ -52,28 +52,35 @@ export class DataStorageService {
                 }
             }
         }
-        this.mapRoutes();
+        //this.mapRoutes(this.filterData);
     }
 
-    mapRoutes(){
-        for(let r in this.filterData){
-                var lon=this.filterData[r].location.longitude;
-                var la=this.filterData[r].location.latitude;
-            if(!this.routeMap.has(this.filterData[r].routeId)){
+    mapRoutes(data){
+        for(let r in data){
+                var lon=data[r].location.longitude;
+                var la=data[r].location.latitude;
+            if(!this.routeMap.has(data[r].routeId)){
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
-                console.log(this.filterData[r].routeId + " : DONEEE");
-                this.routeMap.set(this.filterData[r].routeId, this.array);
+                //console.log(this.filterData[r].routeId + " : DONEEE");
+                this.routeMap.set(data[r].routeId, this.array);
             } else {
-                console.log('------Usao sam tu-------\n Route Id je: ' + this.filterData[r].routeId);
-                this.array= this.routeMap.get(this.filterData[r].routeId);
+                this.array = this.routeMap.get(data[r].routeId);
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
-                this.routeMap.set(this.filterData[r].routeId, this.array);
+                this.routeMap.set(data[r].routeId, this.array);
             }
             this.array = [];
         }
-        console.log(this.routeMap)
         return this.routeMap;
+    }
+
+    getMapKeys(data){
+        this.mapRoutes(data);
+        var set:Set<number>= new Set<number>();
+        this.routeMap.forEach((val, key) => { 
+            set.add(key);
+        });
+        return set;
     }
 }
