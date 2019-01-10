@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import { RouteData } from 'src/app/shared/route-data.model';
 
 
 @Component({
@@ -11,14 +10,11 @@ import { RouteData } from 'src/app/shared/route-data.model';
 })
 export class SearchComponent implements OnInit {
   locationForm: FormGroup;
-  routesData: RouteData[]; 
   dateStart: Date;
   dateEnd: Date;
   
 
-  constructor(private dataStorageService: DataStorageService) { 
-    
-  }
+  constructor(private dataStorageService: DataStorageService) {}
 
   ngOnInit() {
     this.locationForm = new FormGroup({
@@ -28,24 +24,12 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    console.log(this.locationForm.get('location-name').value);
-  }
+  onSubmit() { }
  
-  getRoutes() {
-    this.dataStorageService.getRoutes().subscribe(
-      (data: any[]) => {
-        this.routesData = data;
-      }
-    ); 
-  }
-
-  getFilterRoutes() {
+  filterRoutes() {
     this.dataStorageService.filterRoutes(
       this.locationForm.get('start').value,
-      this.locationForm.get('end').value,
-      this.routesData);
+      this.locationForm.get('end').value);
   }
- 
 } 
 

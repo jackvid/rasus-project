@@ -3,66 +3,70 @@ import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { RouteData } from "./route-data.model";
 import { Coordinates } from "./coordinates.model";
+import { Subject } from "rxjs";
 
 @Injectable()
 export class DataStorageService {
-    filterData: RouteData[] = []; 
+    filterData: RouteData[] = [];
+    routesData: RouteData[] = []; 
     array: Coordinates[] = [];
     routeMap : Map<number, Coordinates[]> = new Map<number, Coordinates[]>();
+    filterRoutesEvent = new Subject<RouteData[]>();
+    
     constructor(private http: Http) {}
 
     getRoutes() {
         return this.http.get('http://161.53.19.87:8824/routes').pipe(
             map(
                 (response: Response) => {
-                     let data = [];
+                    let data = [];
                     data = response.json();
-                    let routesData: RouteData[] = []; 
 
                     for(let i in data) {
                         for(let j in data[i]) {
                             let route: RouteData = data[i][j];
-                            routesData.push(route);
+                            this.routesData.push(route);
                         }
                     }
-                    return routesData;
+                    return this.routesData;
                 }
             )
         );
     }
 
-    filterRoutes(dateStart, dateEnd, routesData){
+    filterRoutes(dateStart, dateEnd){
         var end=false;
         dateStart=new Date(dateStart);
+        this.filterData = []
         
         if(dateEnd!=null){
-            end=true;
-            dateEnd=new Date(dateEnd);
+            end = true;
+            dateEnd = new Date(dateEnd);
         }
        
-        for(let d in routesData){
-            var date= new Date(routesData[d].timestamp);
-            if(end==false){
-                if(dateStart.toDateString()==date.toDateString()) {
-                    this.filterData.push(routesData[d]);
+        for(let d in this.routesData){
+            var date= new Date(this.routesData[d].timestamp);
+            if(end == false){
+                if(dateStart.toDateString() == date.toDateString()) {
+                    this.filterData.push(this.routesData[d]);
                 }
             } else {
                 if((date >= dateStart && date<=dateEnd)){
-                    this.filterData.push(routesData[d]);
+                    this.filterData.push(this.routesData[d]);
                 }
             }
         }
-        //this.mapRoutes(this.filterData);
+        this.filterRoutesEvent.next(this.filterData);
     }
 
     mapRoutes(data){
+        this.routeMap.clear();
         for(let r in data){
                 var lon=data[r].location.longitude;
                 var la=data[r].location.latitude;
             if(!this.routeMap.has(data[r].routeId)){
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
-                //console.log(this.filterData[r].routeId + " : DONEEE");
                 this.routeMap.set(data[r].routeId, this.array);
             } else {
                 this.array = this.routeMap.get(data[r].routeId);

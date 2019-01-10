@@ -18,7 +18,14 @@ export class MapComponent implements OnInit {
   map: Map;
   constructor(private dataStorageService: DataStorageService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.dataStorageService.filterRoutesEvent.subscribe(
+      (filteredRoutes: RouteData[]) => {
+        this.routesData = filteredRoutes;
+        this.showRoutes();
+      }
+    );
+  }
   
   streetMaps = tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     detectRetina: true,
@@ -47,41 +54,49 @@ export class MapComponent implements OnInit {
     center: latLng([45.81444, 15.97798])
   };
 
-  showRoutes(){
+  getRoutesData() {
     this.dataStorageService.getRoutes().subscribe(
-    (data: any[]) => {
-      this.routesData = data;
-      this.routeMap= this.dataStorageService.mapRoutes(this.routesData);
-      this.keys=this.dataStorageService.getMapKeys(this.routesData);
-      console.log("2");
-      var brojac = 0;
-      this.keys.forEach(values => {
-        var array=this.routeMap.get(values);
-        var ruta:any[]=[];
-        for(let i in array){
-          if(array[i].latitude > 45 && array[i].latitude < 46 && array[i].longitude > 15 && array[i].longitude < 16){
-            var novi: number[]=[];
-            novi.push(array[i].latitude, array[i].longitude);
-            ruta.push(novi);
-            console.log(values + " " + brojac);
-            console.log(array[i].latitude + " " + array[i].longitude);
-          }
+      (data: any[]) => {
+        this.routesData = data;
+        this.showRoutes();
+      }
+    );
+  }
+
+  showRoutes() {
+    this.options = {
+      layers: [this.streetMaps, polyline([])],
+      zoom: 10,
+      center: latLng([45.81444, 15.97798])
+    };
+    this.layersControl.overlays = {};
+
+    this.routeMap = this.dataStorageService.mapRoutes(this.routesData);
+    this.keys = this.dataStorageService.getMapKeys(this.routesData);
+    console.log("2");
+    var brojac = 0;
+    this.keys.forEach(values => {
+      var array=this.routeMap.get(values);
+      var ruta:any[]=[];
+      for(let i in array){
+        if(array[i].latitude > 45 && array[i].latitude < 46 && array[i].longitude > 15 && array[i].longitude < 16){
+          var novi: number[]=[];
+          novi.push(array[i].latitude, array[i].longitude);
+          ruta.push(novi);
         }
-        if( ruta.length >0 ){
-          var route = polyline(ruta);
-          var optionlays = this.options.layers;
-          var br=values;
-          var overlays = this.layersControl.overlays;
-          overlays[br] = route;
-          this.options.layers.push(route);
-          brojac++;
-        }
-      });
-      console.log(this.options.layers);
-      console.log(this.layersControl.overlays);
+      }
+      if( ruta.length > 0 ){
+        var route = polyline(ruta);
+        var br = values;
+        var overlays = this.layersControl.overlays;
+        overlays[br] = route;
+        this.options.layers.push(route);
+        brojac++;
+      }
     });
   }
 
+  //inicijalizacija mape
   onMapReady(map: Map) {
     this.map=map;
     var lat=polyline([[45.81444, 15.97798]]);
@@ -92,7 +107,6 @@ export class MapComponent implements OnInit {
       animate: true
     });
     console.log("1");
-    this.showRoutes();
+    this.getRoutesData();
   }
 }
-
