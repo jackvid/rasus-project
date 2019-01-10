@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     this.locationForm = new FormGroup({
       'location-name': new FormControl(null, Validators.required),
-      'start': new FormControl("2019-01-01T00:00:00", Validators.required),
+      'start': new FormControl("2018-09-15", Validators.required),
       'end': new FormControl(null, Validators.required)
     });
   }
