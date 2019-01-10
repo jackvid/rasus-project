@@ -1,3 +1,5 @@
 export class Coordinates {
-    constructor(public longitude: number, public latitude: number) {}
+    constructor(
+        public longitude: number, 
+        public latitude: number) {}
 }

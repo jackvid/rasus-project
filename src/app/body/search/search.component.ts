@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import { Response } from '@angular/http';
 import { RouteData } from 'src/app/shared/route-data.model';
-import { DatePipe } from '@angular/common';
-import { Timestamp } from 'rxjs';
+
 
 @Component({
   selector: 'app-search',
@@ -35,15 +33,18 @@ export class SearchComponent implements OnInit {
   }
  
   getRoutes() {
-    
     this.dataStorageService.getRoutes().subscribe(
       (data: any[]) => {
-       
         this.routesData = data;
-       this.dataStorageService.filterRoutes(this.locationForm.get('start').value ,this.locationForm.get('end').value,this.routesData);
       }
-    );
-    
+    ); 
+  }
+
+  getFilterRoutes() {
+    this.dataStorageService.filterRoutes(
+      this.locationForm.get('start').value,
+      this.locationForm.get('end').value,
+      this.routesData);
   }
  
 } 

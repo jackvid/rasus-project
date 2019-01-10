@@ -14,21 +14,33 @@
       <button type="submit" class="btn btn-primary" [disabled]="locationForm.invalid">Search</button>
      
      <div class="form-group">
-        <label for="start">Start Date:</label>
-       
-       <input type="datetime-local" value="2000-01-01T00:00:00"  class="form-control"  formControlName="start" name="start">
+      <label for="start">Start Date:</label>
+      <input type="datetime-local" value="2000-01-01T00:00:00"  class="form-control"  formControlName="start" name="start">
      </div>
      
      <button (click)=" isShow=!isShow" class="btn btn-primary">End Date</button>
           <div class="ruleOptionsPanel" *ngIf=" isShow">
               <div class="form-group">
                   <label for="start">End Date:</label>
-                  <input type="datetime-local" value="T00:00" class="form-control" id="end" formControlName="end" name="end">
-                  
+                  <input 
+                    type="datetime-local" 
+                    value="T00:00" 
+                    class="form-control" 
+                    id="end" 
+                    formControlName="end" 
+                    name="end">
                 </div>
           </div>
-  
-      <button type="button" class="btn btn-defautlt" (click)="getRoutes()">GET ROUTES</button>
+      <button 
+        type="button" 
+        class="btn btn-defautlt" 
+        (click)="getRoutes()"
+        style="margin-left: 10px;">GET ROUTES</button>
+      <button 
+        type="button" 
+        class="btn btn-defautlt" 
+        (click)="getFilterRoutes()"
+        style="margin-left: 10px;">FILTER ROUTES</button>
     </form> 
   </div>
 </div>

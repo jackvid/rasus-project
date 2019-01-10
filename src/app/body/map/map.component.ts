@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { icon, latLng, Map, marker, point, polyline, tileLayer, LatLngBounds } from 'leaflet'; //EXTRA
 import { RouteData } from "../../shared/route-data.model";
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import { Injectable } from "@angular/core";
-import { map } from 'rxjs/operators';
-import { Coordinates } from "../../shared/coordinates.model";
-import { Route } from '@angular/compiler/src/core';
+
 
 //declare var ol: any;
 @Component({
@@ -18,16 +15,15 @@ export class MapComponent implements OnInit {
   routesData: RouteData[] = []; 
  
   map: Map;
-  constructor(private dataStorageService: DataStorageService) { 
-  }
+  constructor(private dataStorageService: DataStorageService) {}
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
+  
   streetMaps = tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     detectRetina: true,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   });
+
    wMaps = tileLayer('http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
     detectRetina: true,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,28 +80,28 @@ export class MapComponent implements OnInit {
         var array=routeMap.get(values);
         var ruta:any[]=[];
         for(let i in array){
-          if(array[i].latitude>45 && array[i].latitude<46 && array[i].longitude>15 && array[i].longitude<16){
+          if(array[i].latitude > 45 && array[i].latitude < 46 && array[i].longitude > 15 && array[i].longitude < 16){
             var novi: number[]=[];
             novi.push(array[i].latitude, array[i].longitude);
             ruta.push(novi);
-            console.log(values+" "+brojac);
-            console.log(array[i].latitude+" "+array[i].longitude);
+            console.log(values + " " + brojac);
+            console.log(array[i].latitude + " " + array[i].longitude);
           }
         }
-        if(ruta.length>0){
+        if( ruta.length >0 ){
           var route = polyline(ruta);
-          //console.log(route);
-          var optionlays=this.options.layers;
+          var optionlays = this.options.layers;
           var br=values;
           var overlays = this.layersControl.overlays;
           overlays[br] = route;
           this.options.layers.push(route);
           brojac++;
         }
-
       });
       console.log(this.options.layers);
       console.log(this.layersControl.overlays);
   }
-  }
+}
+
+
 

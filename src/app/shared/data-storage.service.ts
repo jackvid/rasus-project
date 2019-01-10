@@ -28,39 +28,32 @@ export class DataStorageService {
                             routesData.push(route);
                         }
                     }
-                    //console.log(routesData);
                     return routesData;
                 }
             )
         );
     }
-   
-    filterRoutes(dateStart, dateEnd,routesData){
+
+    filterRoutes(dateStart, dateEnd, routesData){
         var end=false;
-        
-        
         dateStart=new Date(dateStart);
+        
         if(dateEnd!=null){
-          end=true;
-          dateEnd=new Date(dateEnd);
+            end=true;
+            dateEnd=new Date(dateEnd);
         }
        
         for(let d in routesData){
-          var date= new Date(routesData[d].timestamp);
-          if(end==false){
-           if(dateStart.toDateString()==date.toDateString()){
-             //console.log(date);
-              this.filterData.push(routesData[d]);
-              }
+            var date= new Date(routesData[d].timestamp);
+            if(end==false){
+                if(dateStart.toDateString()==date.toDateString()) {
+                    this.filterData.push(routesData[d]);
+                }
+            } else {
+                if((date >= dateStart && date<=dateEnd)){
+                    this.filterData.push(routesData[d]);
+                }
             }
-          else{
-            if((date >= dateStart && date<=dateEnd)){
-            // console.log(date);
-              this.filterData.push(routesData[d]);
-              }
-    
-          }
-       
         }
 
       
@@ -73,26 +66,25 @@ export class DataStorageService {
             if(!this.routeMap.has(data[r].routeId)){
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
-               // console.log(data[r].routeId + " : DONEEE");
+                //console.log(this.filterData[r].routeId + " : DONEEE");
                 this.routeMap.set(data[r].routeId, this.array);
             } else {
-               // console.log('------Usao sam tu-------\n Route Id je: ' + data[r].routeId);
-                this.array= this.routeMap.get(data[r].routeId);
+                this.array = this.routeMap.get(data[r].routeId);
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
                 this.routeMap.set(data[r].routeId, this.array);
             }
             this.array = [];
         }
-        //console.log(this.routeMap)
         return this.routeMap;
     }
+
     getMapKeys(data){
         this.mapRoutes(data);
         var set:Set<number>= new Set<number>();
         this.routeMap.forEach((val, key) => { 
             set.add(key);
-          });
+        });
         return set;
     }
 }
