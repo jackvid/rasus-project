@@ -4,6 +4,9 @@ import { Injectable } from "@angular/core";
 import { RouteData } from "./route-data.model";
 import { Coordinates } from "./coordinates.model";
 
+
+
+
 @Injectable()
 export class DataStorageService {
     filterData: RouteData[] = []; 
@@ -59,7 +62,8 @@ export class DataStorageService {
           }
        
         }
-        //this.mapRoutes(this.filterData);
+
+      
     }
 
     mapRoutes(data){

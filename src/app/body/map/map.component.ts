@@ -16,8 +16,7 @@ import { Route } from '@angular/compiler/src/core';
 
 export class MapComponent implements OnInit {
   routesData: RouteData[] = []; 
-  routeMap : any;
-  keys:Set<number>=new Set<number>();
+ 
   map: Map;
   constructor(private dataStorageService: DataStorageService) { 
   }
@@ -55,14 +54,34 @@ export class MapComponent implements OnInit {
     this.dataStorageService.getRoutes().subscribe(
     (data: any[]) => {
       this.routesData = data;
-      this.routeMap= this.dataStorageService.mapRoutes(this.routesData);
-      this.keys=this.dataStorageService.getMapKeys(this.routesData);
+      
+      this.showFilterRoutes(this.routesData);
+    });
+  }
+
+   onMapReady(map: Map) {
+    this.map=map;
+    var lat=polyline([[45.81444, 15.97798]]);
+    map.fitBounds(lat.getBounds(), {
+      padding: point(24, 24),
+      maxZoom: 12,
+      animate: true
+     });
+     console.log("1");
+     this.showRoutes();
+  }
+
+  showFilterRoutes(data){
+    var routeMap : any;
+    var keys:Set<number>=new Set<number>();
+    routeMap= this.dataStorageService.mapRoutes(data);
+    keys=this.dataStorageService.getMapKeys(data);
       console.log("2");
       // var array=this.routeMap.get(parseInt("33939750"));
       var brojac=0;
-      this.keys.forEach(values => {
+      keys.forEach(values => {
 
-        var array=this.routeMap.get(values);
+        var array=routeMap.get(values);
         var ruta:any[]=[];
         for(let i in array){
           if(array[i].latitude>45 && array[i].latitude<46 && array[i].longitude>15 && array[i].longitude<16){
@@ -87,19 +106,6 @@ export class MapComponent implements OnInit {
       });
       console.log(this.options.layers);
       console.log(this.layersControl.overlays);
-    });
-  }
-
-   onMapReady(map: Map) {
-    this.map=map;
-    var lat=polyline([[45.81444, 15.97798]]);
-    map.fitBounds(lat.getBounds(), {
-      padding: point(24, 24),
-      maxZoom: 12,
-      animate: true
-     });
-     console.log("1");
-     this.showRoutes();
   }
   }
 
