@@ -4,7 +4,6 @@ import { RouteData } from "../../shared/route-data.model";
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 
-//declare var ol: any;
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',

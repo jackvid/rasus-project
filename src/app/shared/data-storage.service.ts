@@ -5,6 +5,7 @@ import { RouteData } from "./route-data.model";
 import { Coordinates } from "./coordinates.model";
 import { Subject } from "rxjs";
 
+
 @Injectable()
 export class DataStorageService {
     filterData: RouteData[] = [];
