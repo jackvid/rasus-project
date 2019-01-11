@@ -39,20 +39,23 @@ export class DataStorageService {
         var end=false;
         dateStart=new Date(dateStart);
         this.filterData = []
-        
-        if(dateEnd!=null){
+        console.log(dateEnd);
+        if(dateEnd!=null && dateEnd !=""){
             end = true;
-            dateEnd = new Date(dateEnd);
+            dateEnd = new Date(dateEnd).setHours(0,0,0,0);
         }
        
         for(let d in this.routesData){
             var date= new Date(this.routesData[d].timestamp);
+
             if(end == false){
                 if(dateStart.toDateString() == date.toDateString()) {
+                    console.log(this.routesData[d]);
                     this.filterData.push(this.routesData[d]);
                 }
             } else {
-                if((date >= dateStart && date<=dateEnd)){
+                if((date.setHours(0,0,0,0) >= dateStart.setHours(0,0,0,0) && date.setHours(0,0,0,0)<=dateEnd)){
+                    console.log(date +"    "+ dateStart)
                     this.filterData.push(this.routesData[d]);
                 }
             }
