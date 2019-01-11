@@ -6,5 +6,6 @@ export class RouteData {
         public location: LocationData,
         public timestamp: number,
         public routeId: number
+        //public distance: number
     ) {}
 }
