@@ -13,39 +13,34 @@
       </div>
       <button type="submit" class="btn btn-primary" [disabled]="locationForm.invalid">Search</button>
      
-     <div class="form-group">
-      <label for="start">Start Date:</label>
-      <input type="date" id ="alo" value=""  class="form-control"  formControlName="start" name="start">
-     </div>
+      <div class="form-group">
+        <label for="start">Start Date:</label>
+        <input type="date" id ="alo" value=""  class="form-control"  formControlName="start" name="start">
+      </div>
      
-     <button (click)=" isShow=!isShow" class="btn btn-primary">End Date</button>
-          <div class="ruleOptionsPanel" *ngIf=" isShow">
-              <div class="form-group">
-                <br>
-                  <label for="start">End Date:</label>
-                  <input 
-                    type="date" 
-                    value="T00:00" 
-                    class="form-control" 
-                    id="end" 
-                    formControlName="end" 
-                    name="end">
-                </div>
-          </div>
-      <!--<button 
-        type="button" 
-        class="btn btn-defautlt" 
-        (click)="getRoutes()"
-        style="margin-left: 10px;">GET ROUTES</button>-->
+      <button (click)=" isShow=!isShow" class="btn btn-primary">End Date</button>
+      <div class="ruleOptionsPanel" *ngIf=" isShow">
+          <div class="form-group">
+            <br>
+              <label for="start">End Date:</label>
+              <input 
+                type="date" 
+                value="T00:00" 
+                class="form-control" 
+                id="end" 
+                formControlName="end" 
+                name="end">
+            </div>
+      </div>
       <br>
       <br>
       <br>
-        <div>
-      <button 
-        type="button" 
-        class="btn btn-defautlt" 
-        (click)="filterRoutes()"
-        style="margin-left: 10px;">FILTER ROUTES</button>
+      <div>
+        <button 
+          type="button" 
+          class="btn btn-defautlt" 
+          (click)="filterRoutes()"
+          style="margin-left: 10px;">FILTER ROUTES</button>
       </div>
     </form> 
   </div>

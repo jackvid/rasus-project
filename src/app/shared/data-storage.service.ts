@@ -47,15 +47,12 @@ export class DataStorageService {
        
         for(let d in this.routesData){
             var date= new Date(this.routesData[d].timestamp);
-
             if(end == false){
                 if(dateStart.toDateString() == date.toDateString()) {
-                    console.log(this.routesData[d]);
                     this.filterData.push(this.routesData[d]);
                 }
             } else {
                 if((date.setHours(0,0,0,0) >= dateStart.setHours(0,0,0,0) && date.setHours(0,0,0,0)<=dateEnd)){
-                    console.log(date +"    "+ dateStart)
                     this.filterData.push(this.routesData[d]);
                 }
             }
