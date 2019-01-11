@@ -11,6 +11,9 @@ import { SearchComponent } from './body/search/search.component';
 import { DataStorageService } from './shared/data-storage.service';
 
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { AppRoutingModule } from './app-routing.module';
+import { HourComponent } from './body/statistics/hour/hour.component';
+import { DayComponent } from './body/statistics/day/day.component';
 
 
 @NgModule({
@@ -19,13 +22,16 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     HeaderComponent,
     BodyComponent,
     MapComponent,
-    SearchComponent
+    SearchComponent,
+    HourComponent,
+    DayComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpModule,
-    LeafletModule.forRoot()
+    LeafletModule.forRoot(),
+    AppRoutingModule
   ],
   providers: [ DataStorageService ],
   bootstrap: [AppComponent]
