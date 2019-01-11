@@ -98,6 +98,7 @@ export class MapComponent implements OnInit {
           sverute.push(novi);
         }
       }
+
       //dodavanje svake rute pojedinacno
       if( ruta.length > 0 ){
         var route = polyline(ruta);
@@ -116,6 +117,7 @@ export class MapComponent implements OnInit {
         this.options.layers.push(all);
       }
     });
+    console.log('3');
   }
 
   //inicijalizacija mape

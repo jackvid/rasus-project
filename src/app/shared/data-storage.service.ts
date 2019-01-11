@@ -38,8 +38,8 @@ export class DataStorageService {
     filterRoutes(dateStart, dateEnd){
         var end=false;
         dateStart=new Date(dateStart);
-        this.filterData = []
-        console.log(dateEnd);
+        this.filterData = [];
+
         if(dateEnd!=null && dateEnd !=""){
             end = true;
             dateEnd = new Date(dateEnd).setHours(0,0,0,0);
@@ -57,6 +57,7 @@ export class DataStorageService {
                 }
             }
         }
+        this.getStatisticByHour();
         this.filterRoutesEvent.next(this.filterData);
     }
 
@@ -87,5 +88,14 @@ export class DataStorageService {
             set.add(key);
         });
         return set;
+    }
+
+    getStatisticByHour() {
+        var hourStatistic: number[] = [];
+        for(let data of this.filterData) {
+            var date = new Date(data.timestamp);
+            hourStatistic[date.getHours()] += 1;
+        }
+        return hourStatistic;
     }
 }
