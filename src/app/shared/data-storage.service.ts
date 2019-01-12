@@ -57,7 +57,7 @@ export class DataStorageService {
                 }
             }
         }
-        this.getStatisticByHour();
+       
         this.filterRoutesEvent.next(this.filterData);
     }
 
@@ -90,12 +90,83 @@ export class DataStorageService {
         return set;
     }
 
-    getStatisticByHour() {
-        var hourStatistic: number[] = [];
-        for(let data of this.filterData) {
-            var date = new Date(data.timestamp);
-            hourStatistic[date.getHours()] += 1;
+    getStatisticByHour(dataCalc) {
+     //   var  hourStatistic : Map<number, number> = new Map<number, number>();
+        var  hourStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
+         for(let data of dataCalc) {
+             if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17){
+               console.log(data.routeId);
+                if(hourStat.has(data.routeId)){
+                    var hourStatistic=hourStat.get(data.routeId);
+                    var date = new Date(data.timestamp);
+                    var hour= date.getHours();
+                    if(hourStatistic.has(hour)){
+                      //  console.log(date.getHours()+ " ima   "+ hourStatistic.get(date.getHours()));
+                        var numb= hourStatistic.get(date.getHours())+1;
+                        hourStatistic.set(date.getHours(),numb);
+                    }
+                    else{
+                        //console.log(date.getHours()+ " POSTAVI ");
+                        hourStatistic.set(date.getHours(),1);
+                    }
+                    hourStat.set(data.routeId,hourStatistic);
+                }
+                else{
+                    var hourStatistic=new  Map<number, number>();
+                    var date = new Date(data.timestamp);
+                    var hour= date.getHours();
+                    if(hourStatistic.has(hour)){
+                      //  console.log(date.getHours()+ " ima   "+ hourStatistic.get(date.getHours()));
+                        var numb= hourStatistic.get(date.getHours())+1;
+                        hourStatistic.set(date.getHours(),numb);
+                    }
+                    else{
+                        //console.log(date.getHours()+ " POSTAVI ");
+                        hourStatistic.set(date.getHours(),1);
+                    }
+                    hourStat.set(data.routeId,hourStatistic);
+                }
+            }
+         }
+    
+       var length = 0;
+       var  hourStatistic : Map<number, number> = new Map<number, number>();
+       for(var i=0;i<24;++i){
+           hourStatistic.set(i,0);
+            hourStat.forEach(element => {
+                if(element.has(i)){
+                    var val= hourStatistic.get(i)+1;
+                    hourStatistic.set(i,val);
+                }
+
+
+            });
+
+       }
+       for(var i=0;i<24;++i){
+        length+=hourStatistic.get(i);
+       }
+   
+       for(var i=0;i<24;++i){
+        var val=(hourStatistic.get(i)/length);
+        if(val!=0){
+            val=val*100;
         }
-        return hourStatistic;
+        
+         hourStatistic.set(i,Math.round(val * 100) / 100);
+       }
+
+    
+       return hourStatistic;
+     }
+     
+     getAllStatisticByHour() {
+         return this.getStatisticByHour(this.routesData);
+     }
+     getFilteredStatisticByHour() {
+        if(this.filterData.length==0){
+            this.filterRoutes(new Date,null);
+        }
+        return this.getStatisticByHour(this.filterData);
     }
 }
