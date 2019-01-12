@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { icon, latLng, Map, marker, point, polyline, tileLayer, LatLngBounds, Polyline, circle, LayerGroup, LatLng, Layer} from 'leaflet';
+import { icon, latLng, Map, marker, point, polyline, tileLayer, LatLngBounds, Polyline, circle, layerGroup, LatLng, Layer} from 'leaflet';
 import { RouteData } from "../../shared/route-data.model";
 import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { map } from 'rxjs/operators';
+import { b } from '@angular/core/src/render3';
 
 
 @Component({
@@ -14,8 +16,11 @@ export class MapComponent implements OnInit {
   routesData: RouteData[] = []; 
   routeMap : any;
   keys:Set<number>=new Set<number>();
-  constructor(private dataStorageService: DataStorageService) {}
+  map:Map;
+  sverute=layerGroup([]);
+  routeLength={};
 
+  constructor(private dataStorageService: DataStorageService) {}
   ngOnInit() {
     this.dataStorageService.filterRoutesEvent.subscribe(
       (filteredRoutes: RouteData[]) => {
@@ -24,7 +29,8 @@ export class MapComponent implements OnInit {
       }
     );
   }
-  
+
+ 
   streetMaps = tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     detectRetina: true,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -43,16 +49,15 @@ export class MapComponent implements OnInit {
       shadowUrl: 'leaflet/marker-shadow.png'
     })
   });
-
+  
   layersControl = {
     baseLayers: {
       'Street Maps': this.streetMaps,
       'Wikimedia Maps': this.wMaps
     },
-    overlays: {
-      //filteri
-      //'Mt. Rainier Climb Route': route
-    }
+    overlays: 
+      {
+      }
   };
 
   options = {
@@ -70,20 +75,27 @@ export class MapComponent implements OnInit {
     );
   }
 
+
   showRoutes() {
+    var markers = layerGroup([]);
+    this.sverute=layerGroup([]);
+
+    //brisanje svih dodanih layera
+    this.map.eachLayer(lay=>{
+      if(lay!=this.streetMaps && lay!=this.wMaps && lay!=this.summit){
+          this.map.removeLayer(lay);
+      }
+    });
     this.options = {
-      layers: [this.streetMaps, this.summit, polyline([])],
+      layers: [this.streetMaps, this.summit,  polyline([])],
       zoom: 10,
       center: latLng([45.81444, 15.97798])
     };
     this.layersControl.overlays = {};
-    
 
     this.routeMap = this.dataStorageService.mapRoutes(this.routesData);
     this.keys = this.dataStorageService.getMapKeys(this.routesData);
     console.log("2");
-
-    var sverute:any[]=[];
 
     this.keys.forEach(values => {
       var array=this.routeMap.get(values);
@@ -94,28 +106,42 @@ export class MapComponent implements OnInit {
           var novi: number[]=[];
           novi.push(array[i].latitude, array[i].longitude);
           ruta.push(novi);
-
-          sverute.push(novi);
         }
       }
 
       //dodavanje svake rute pojedinacno
       if( ruta.length > 0 ){
         var route = polyline(ruta);
-         var br = values;
-         var overlays = this.layersControl.overlays;
-         overlays[br] = route;
-         this.options.layers.push(route);
+      //------------------- za pojedinacno dodavanje ruta
+      //   var br = values;
+       //  var overlays = this.layersControl.overlays;
+       //  overlays[br] = route;
+       //  this.options.layers.push(route);
+       //  this.map.addLayer(route);
+         this.sverute.addLayer(route);
+
+        var routeMarker = marker(route.getCenter(), {
+          icon: icon({
+            iconSize: [ 15, 15 ],
+            iconAnchor: [ 13, 41 ],
+            iconUrl: 'leaflet/marker-icon.png',
+            shadowUrl: 'leaflet/marker-shadow.png'
+          })
+        });
+        var dist= this.getLength(route);
+        routeMarker.bindPopup(dist.toString()+"m");
+        markers.addLayer(routeMarker);
+        //------------------- za pojedinacno dodavanje markera
+        //this.layersControl.overlays[br+"m"]=routeMarker;
+        //this.map.addLayer(routeMarker); 
+      }
+      if(marker.length>0){
+        this.layersControl.overlays["routes"]=this.sverute;
+        this.map.addLayer(this.sverute);
+        this.layersControl.overlays["route lengths"]=markers;
+        this.map.addLayer(markers);
       }
       
-
-      //sve rute u jednoj
-      if(sverute.length > 0 ){
-        var all=polyline(sverute);
-        var alllays= this.layersControl.overlays;
-        alllays["all"] = all;
-        this.options.layers.push(all);
-      }
     });
     console.log('3');
   }
@@ -123,7 +149,7 @@ export class MapComponent implements OnInit {
   //inicijalizacija mape
   onMapReady(map: Map) {
     var lat=polyline([[45.81444, 15.97798]]);
-    
+    this.map=map;
     map.fitBounds(lat.getBounds(), {
       padding: point(24, 24),
       maxZoom: 12,
@@ -132,7 +158,24 @@ export class MapComponent implements OnInit {
   
     console.log("1");
     this.getRoutesData();
+   
   }
 
-  
+  getLength(r:Polyline<any>){
+    var  ll=r.getLatLngs();
+    var dist:number=0;
+    var previousPoint;
+    var point;
+
+    for(let i in ll){
+      if(previousPoint){
+        var latlng = latLng(previousPoint.lat, previousPoint.lng);
+        point=ll[i];
+        var latlngPoint = latLng(point.lat, point.lng);
+        dist+=latlng.distanceTo(latlngPoint);
+      }
+      previousPoint=ll[i];
+    }
+    return dist;
+  }
 }
