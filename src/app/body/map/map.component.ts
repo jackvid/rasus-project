@@ -62,9 +62,11 @@ export class MapComponent implements OnInit {
   };
 
   getRoutesData() {
+    
     this.dataStorageService.getRoutes().subscribe(
       (data: any[]) => {
         this.routesData = data;
+       
         this.showRoutes();
       }
     );

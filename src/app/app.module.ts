@@ -9,7 +9,7 @@ import { BodyComponent } from './body/body.component';
 import { MapComponent } from './body/map/map.component';
 import { SearchComponent } from './body/search/search.component';
 import { DataStorageService } from './shared/data-storage.service';
-
+import { ChartsModule } from 'ng2-charts';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppRoutingModule } from './app-routing.module';
 import { HourComponent } from './body/statistics/hour/hour.component';
@@ -31,7 +31,8 @@ import { DayComponent } from './body/statistics/day/day.component';
     ReactiveFormsModule,
     HttpModule,
     LeafletModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    ChartsModule
   ],
   providers: [ DataStorageService ],
   bootstrap: [AppComponent]
