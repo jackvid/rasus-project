@@ -47,6 +47,7 @@ export class DataStorageService {
        
         for(let d in this.routesData){
             var date= new Date(this.routesData[d].timestamp);
+           
             if(end == false){
                 if(dateStart.toDateString() == date.toDateString()) {
                     this.filterData.push(this.routesData[d]);
@@ -95,7 +96,7 @@ export class DataStorageService {
         var  hourStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
          for(let data of dataCalc) {
              if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17){
-               console.log(data.routeId);
+          
                 if(hourStat.has(data.routeId)){
                     var hourStatistic=hourStat.get(data.routeId);
                     var date = new Date(data.timestamp);
@@ -168,5 +169,143 @@ export class DataStorageService {
             this.filterRoutes(new Date,null);
         }
         return this.getStatisticByHour(this.filterData);
+    }
+
+    getStatisticByWeek(isAllData:boolean){
+        var dataCalc;
+        if(isAllData==true){
+            dataCalc=this.routesData;
+        }else{
+            if(this.filterData.length==0){
+                this.filterRoutes(new Date,null);
+            }
+            dataCalc=this.filterData;
+        }
+        var  dayStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
+        for(let data of dataCalc) {
+            if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17){
+         
+               if(dayStat.has(data.routeId)){
+                   var daysStatistic=dayStat.get(data.routeId);
+                   var date = new Date(data.timestamp);
+                   var day= date.getDay();
+                   if(daysStatistic.has(day)){
+                       var numb= daysStatistic.get(date.getDay())+1;
+                       daysStatistic.set(date.getDay(),numb);
+                   }
+                   else{
+                    daysStatistic.set(date.getDay(),1);
+                   }
+                   dayStat.set(data.routeId,daysStatistic);
+               }
+               else{
+                   var daysStatistic=new  Map<number, number>();
+                   var date = new Date(data.timestamp);
+                   var day= date.getDay();
+                 
+                   if(daysStatistic.has(day)){
+                       var numb=daysStatistic.get(date.getDay())+1;
+                       daysStatistic.set(date.getDay(),numb);
+                   }
+                   else{
+                    daysStatistic.set(date.getDay(),1);
+                   }
+                   dayStat.set(data.routeId,daysStatistic);
+               }
+           }
+        }
+     
+      var length = 0;
+      var  dayStatistic: Map<string, number> = new Map<string, number>();
+      var  dayStatisticSort: Map<string, number> = new Map<string, number>();
+      let array=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      for(var i=0;i<array.length;++i){
+           dayStatistic.set(array[i],0);
+           dayStat.forEach(element => {
+               if(element.has(i)){
+                   var val= dayStatistic.get(array[i])+1;
+                   dayStatistic.set(array[i],val);
+               }
+
+
+           });
+
+      }
+        array=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
+      for(var i=0;i<array.length;++i){
+       length+=dayStatistic.get(array[i]);
+      }
+  
+      for(var i=0;i<array.length;++i){
+       var val=(dayStatistic.get(array[i])/length);
+       if(val!=0){
+           val=val*100;
+       }
+       
+       dayStatisticSort.set(array[i],Math.round(val * 100) / 100);
+      }
+
+      
+      return dayStatisticSort;
+
+    }
+    getStatisticByMonth(year:number){
+        var dataCalc=this.routesData;
+       
+        var  monStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
+        for(let data of dataCalc) {
+            var date = new Date(data.timestamp);
+            if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17 && date.getFullYear()==year){
+         
+               if(monStat.has(data.routeId)){
+                   var monthsStatistic=monStat.get(data.routeId);
+               
+                   var month= date.getMonth();
+                   if(monthsStatistic.has(month)){
+                       var numb= monthsStatistic.get(date.getMonth())+1;
+                       monthsStatistic.set(date.getMonth(),numb);
+                   }
+                   else{
+                    monthsStatistic.set(date.getMonth(),1);
+                   }
+                   monStat.set(data.routeId,monthsStatistic);
+               }
+               else{
+                   var monthsStatistic=new  Map<number, number>();
+                   var month= date.getMonth();
+                 
+                   if(monthsStatistic.has(month)){
+                       var numb=monthsStatistic.get(date.getMonth())+1;
+                       monthsStatistic.set(date.getMonth(),numb);
+                   }
+                   else{
+                    monthsStatistic.set(date.getMonth(),1);
+                   }
+                   monStat.set(data.routeId,monthsStatistic);
+               }
+           }
+        }
+     
+      var length = 0;
+      var  monthStatistic: Map<string, number> = new Map<string, number>();
+  
+      let array=['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      for(var i=0;i<array.length;++i){
+           monthStatistic.set(array[i],0);
+           monStat.forEach(element => {
+               if(element.has(i)){
+                   var val= monthStatistic.get(array[i])+1;
+                   monthStatistic.set(array[i],val);
+               }
+
+
+           });
+
+      }
+       
+  
+      console.log(monthStatistic);
+      
+      return monthStatistic;
     }
 }
