@@ -14,6 +14,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppRoutingModule } from './app-routing.module';
 import { HourComponent } from './body/statistics/hour/hour.component';
 import { DayComponent } from './body/statistics/day/day.component';
+import { MonthComponent } from './body/statistics/month/month.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { DayComponent } from './body/statistics/day/day.component';
     MapComponent,
     SearchComponent,
     HourComponent,
-    DayComponent
+    DayComponent,
+    MonthComponent
   ],
   imports: [
     BrowserModule,
