@@ -45,8 +45,7 @@ export class MapComponent implements OnInit {
     icon: icon({
       iconSize: [ 25, 41 ],
       iconAnchor: [ 13, 41 ],
-      iconUrl: 'leaflet/marker-icon.png',
-      shadowUrl: 'leaflet/marker-shadow.png'
+      iconUrl: 'leaflet/marker-icon-2x.png'
     })
   });
   
@@ -71,10 +70,10 @@ export class MapComponent implements OnInit {
     this.dataStorageService.getRoutes().subscribe(
       (data: any[]) => {
         this.routesData = data;
-       
         this.showRoutes();
       }
     );
+    
   }
 
 
@@ -124,14 +123,14 @@ export class MapComponent implements OnInit {
 
         var routeMarker = marker(route.getCenter(), {
           icon: icon({
-            iconSize: [ 15, 15 ],
+            iconSize: [ 20, 20 ],
             iconAnchor: [ 13, 41 ],
-            iconUrl: 'leaflet/marker-icon.png',
-            shadowUrl: 'leaflet/marker-shadow.png'
+            iconUrl: 'bike.jpg'
           })
         });
-        var dist= this.getLength(route);
-        routeMarker.bindPopup(dist.toString()+"m");
+        var dist= Math.round(this.getLength(route));
+        var dur=this.dataStorageService.getRouteDurations(values);
+        routeMarker.bindPopup("Duljina rute:"+dist.toString()+"m"+" Trajaje rute(h:m:s):"+dur);
         markers.addLayer(routeMarker);
         //------------------- za pojedinacno dodavanje markera
         //this.layersControl.overlays[br+"m"]=routeMarker;
@@ -146,6 +145,7 @@ export class MapComponent implements OnInit {
       
     });
     console.log('3');
+   
   }
 
   //inicijalizacija mape

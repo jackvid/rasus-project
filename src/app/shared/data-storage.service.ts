@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { RouteData } from "./route-data.model";
 import { Coordinates } from "./coordinates.model";
-import { Subject } from "rxjs";
+import { Subject, Timestamp } from "rxjs";
 
 
 @Injectable()
@@ -12,6 +12,7 @@ export class DataStorageService {
     routesData: RouteData[] = []; 
     array: Coordinates[] = [];
     routeMap : Map<number, Coordinates[]> = new Map<number, Coordinates[]>();
+    routeTime : Map<number, number[]> = new Map<number, number[]>();
     filterRoutesEvent = new Subject<RouteData[]>();
     
     constructor(private http: Http) {}
@@ -63,18 +64,30 @@ export class DataStorageService {
 
     mapRoutes(data){
         this.routeMap.clear();
+        var tarray:number[]=[];
+
         for(let r in data){
                 var lon=data[r].location.longitude;
                 var la=data[r].location.latitude;
+                var time:number;
+                time=data[r].timestamp;
             if(!this.routeMap.has(data[r].routeId)){
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
                 this.routeMap.set(data[r].routeId, this.array);
+
+                tarray=[time];
+                this.routeTime.set(data[r].routeId, tarray);
+
             } else {
                 this.array = this.routeMap.get(data[r].routeId);
                 let coordinates = new Coordinates(lon, la);
                 this.array.push(coordinates);
                 this.routeMap.set(data[r].routeId, this.array);
+
+                tarray=this.routeTime.get(data[r].routeId);
+                tarray.push(time);
+                this.routeTime.set(data[r].routeId, tarray);
             }
             this.array = [];
         }
@@ -169,4 +182,19 @@ export class DataStorageService {
         }
         return this.getStatisticByHour(this.filterData);
     }
+
+    getRouteDurations(routeid){
+        var duration:String;
+        this.routeTime.forEach((val, key)=>{
+            if(key==routeid){
+                var times=val;
+                var date=new Date(times[0]);
+                var end=new Date(times[times.length-1]);
+                var interval=new Date(times[times.length-1]-times[0]);
+                duration=(interval.getUTCHours()+":"+ interval.getUTCMinutes()+":"+interval.getUTCSeconds()).toString();
+            }
+        });
+        return duration;
+    }
+    
 }
