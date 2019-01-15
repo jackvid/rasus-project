@@ -98,6 +98,10 @@ export class MapComponent implements OnInit {
     this.keys = this.dataStorageService.getMapKeys(this.routesData);
     console.log("2");
 
+    var maxL=0;
+    var najduza:any[]=[];
+    var trajanje;
+
     this.keys.forEach(values => {
       var array=this.routeMap.get(values);
       var ruta:any[]=[];
@@ -112,14 +116,8 @@ export class MapComponent implements OnInit {
 
       //dodavanje svake rute pojedinacno
       if( ruta.length > 0 ){
-        var route = polyline(ruta);
-      //------------------- za pojedinacno dodavanje ruta
-      //   var br = values;
-       //  var overlays = this.layersControl.overlays;
-       //  overlays[br] = route;
-       //  this.options.layers.push(route);
-       //  this.map.addLayer(route);
-         this.sverute.addLayer(route);
+        var route = polyline(ruta, {color: 'blue'});
+        this.sverute.addLayer(route);
 
         var routeMarker = marker(route.getCenter(), {
           icon: icon({
@@ -132,20 +130,28 @@ export class MapComponent implements OnInit {
         var dur=this.dataStorageService.getRouteDurations(values);
         routeMarker.bindPopup("Duljina rute:"+dist.toString()+"m"+" Trajaje rute(h:m:s):"+dur);
         markers.addLayer(routeMarker);
-        //------------------- za pojedinacno dodavanje markera
-        //this.layersControl.overlays[br+"m"]=routeMarker;
-        //this.map.addLayer(routeMarker); 
+        if(dist>maxL){
+          maxL=dist;
+          najduza= ruta;
+          trajanje=dur;
+          console.log(maxL);
+        }
       }
       if(marker.length>0){
-        this.layersControl.overlays["routes"]=this.sverute;
+        this.layersControl.overlays["Routes"]=this.sverute;
         this.map.addLayer(this.sverute);
-        this.layersControl.overlays["route lengths"]=markers;
+        this.layersControl.overlays["Route lengths"]=markers;
         this.map.addLayer(markers);
       }
-      
+    
     });
     console.log('3');
-   
+    if(maxL>0){
+      var longest=polyline(najduza, {color: 'red'});
+      this.layersControl.overlays["Longest route"]=longest;
+      longest.bindPopup("Duljina rute:"+maxL.toString()+"m Trajaje rute(h:m:s):"+trajanje);
+      this.map.addLayer(longest);
+    }
   }
 
   //inicijalizacija mape
