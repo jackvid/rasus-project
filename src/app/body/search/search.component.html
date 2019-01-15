@@ -1,42 +1,40 @@
 <div class="row">
   <div class="col-xs-12">
     <form [formGroup]="locationForm" (ngSubmit)="onSubmit()">
-      <div class="row">
-        <div class="form-group">
-          <label for="location-name">Location</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            name="location-name"
-            formControlName="location-name">
-        </div>
+      <div class="row" class="form-group">
+        <label for="location">Location: </label>
+        <select 
+          name="location"
+          class="form-control"
+          id="location" 
+          formControlName="location">
+          <option value="north" >North</option>
+          <option value="south">South</option>
+          <option value="center">Center</option>
+          <option value="east">East</option>
+          <option value="west">West</option>
+        </select>
       </div>
-      <button type="submit" class="btn btn-primary" [disabled]="locationForm.invalid">Search</button>
-     
       <div class="form-group">
         <label for="start">Start Date:</label>
         <input type="date" id ="alo" value=""  class="form-control"  formControlName="start" name="start">
       </div>
-     
-      <button (click)=" isShow=!isShow" class="btn btn-primary">End Date</button>
-      <div class="ruleOptionsPanel" *ngIf=" isShow">
+      <button (click)=" isShow=!isShow" class="btn btn-default">End Date</button>
+      <div class="ruleOptionsPanel" *ngIf=" isShow" style="margin-top: 5px;">
           <div class="form-group">
-            <br>
-              <label for="start">End Date:</label>
-              <input 
-                type="date" 
-                class="form-control" 
-                id="end" 
-                formControlName="end" 
-                name="end">
-            </div>
+            <label for="start">End Date:</label>
+            <input 
+              type="date" 
+              class="form-control" 
+              id="end" 
+              formControlName="end" 
+              name="end">
+          </div>
       </div>
-      <br>
-      <br>
-      <div>
+      <div class="row" style="margin-top: 10px;">
         <button 
           type="button" 
-          class="btn btn-defautlt" 
+          class="btn btn-primary" 
           (click)="filterRoutes()"
           style="margin-left: 10px;">FILTER ROUTES</button>
       </div>

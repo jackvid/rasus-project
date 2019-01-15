@@ -10,15 +10,13 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
 })
 export class SearchComponent implements OnInit {
   locationForm: FormGroup;
-  dateStart: Date;
-  dateEnd: Date;
   
 
   constructor(private dataStorageService: DataStorageService) {}
 
   ngOnInit() {
     this.locationForm = new FormGroup({
-      'location-name': new FormControl(null, Validators.required),
+      'location': new FormControl('center'),
       'start': new FormControl("2018-09-15", Validators.required),
       'end': new FormControl(null, Validators.required)
     });
@@ -27,9 +25,11 @@ export class SearchComponent implements OnInit {
   onSubmit() { }
  
   filterRoutes() {
+    //console.log(this.locationForm.get('location').value);
     this.dataStorageService.filterRoutes(
       this.locationForm.get('start').value,
-      this.locationForm.get('end').value);
+      this.locationForm.get('end').value,
+      this.locationForm.get('location').value);
   }
 } 
 

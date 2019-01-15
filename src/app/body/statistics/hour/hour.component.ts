@@ -22,9 +22,6 @@ arrayFiltered:any[]=[];
       this.arrayFiltered[i]=num;
       this.arrayAll[i]=numAll;
     }
-   
-   
-     
   }
 // lineChart
 public lineChartData:Array<any> = [

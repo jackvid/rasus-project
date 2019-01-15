@@ -10,22 +10,20 @@ export class DayComponent implements OnInit {
   arrayAll:any[]=[];
   arrayFiltered:any[]=[];
   array=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    constructor(private dataStorageService:DataStorageService) { }
   
-    ngOnInit() {
-      var rvFiltered=this.dataStorageService.getStatisticByWeek(false);
-      var rvAll=this.dataStorageService.getStatisticByWeek(true);
-      
-      for(var i=0; i<this.array.length;++i){
-        var num=rvFiltered.get(this.array[i]);
-        var numAll=rvAll.get(this.array[i]);
-        this.arrayFiltered[i]=num;
-        this.arrayAll[i]=numAll;
-      }
-     
-     
-       
-    }
+  constructor(private dataStorageService:DataStorageService) { }
+  
+  ngOnInit() {
+    var rvFiltered=this.dataStorageService.getStatisticByWeek(false);
+    var rvAll=this.dataStorageService.getStatisticByWeek(true);
+    
+    for(var i=0; i<this.array.length;++i){
+      var num=rvFiltered.get(this.array[i]);
+      var numAll=rvAll.get(this.array[i]);
+      this.arrayFiltered[i]=num;
+      this.arrayAll[i]=numAll;
+    }   
+  }
   // lineChart
   public lineChartData:Array<any> = [
     {data: this.arrayFiltered, label: 'Filtered Data'},

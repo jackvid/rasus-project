@@ -1,16 +1,18 @@
 <div class="col-md-3">
   <app-search></app-search>
-  <br> <br>
+  
+</div>
+<div class="col-md-9">
+  <app-map></app-map>
+  <br>
+  <label for="statistics">Statistics:</label>
+  <br>
   <ul class="nav nav-pills" style="margin-top: 10px;">
     <li 
       routerLinkActive="active">
-        <a 
-          class="nav-link"
-          routerLink="/hour">
-        
-          Hour
-        
-        </a>
+      <a 
+        class="nav-link"
+        routerLink="/hour">Hour</a>
     </li>
     <li
       routerLinkActive="active">
@@ -25,10 +27,6 @@
         routerLink="/month">Month</a>
     </li>
   </ul>
- 
-</div>
-<div class="col-md-9">
-  <app-map></app-map>
   <router-outlet></router-outlet>
 </div>
 
