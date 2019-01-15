@@ -78,7 +78,7 @@ export class MapComponent implements OnInit {
 
 
   showRoutes() {
-    var markers = layerGroup([]);
+   // var markers = layerGroup([]);
     this.sverute=layerGroup([]);
 
     //brisanje svih dodanih layera
@@ -117,30 +117,30 @@ export class MapComponent implements OnInit {
       //dodavanje svake rute pojedinacno
       if( ruta.length > 0 ){
         var route = polyline(ruta, {color: 'blue'});
+        var dist= Math.round(this.getLength(route));
+        var dur=this.dataStorageService.getRouteDurations(values);
+        route.bindPopup("Duljina rute:"+dist.toString()+"m"+" Trajaje rute(h:m:s):"+dur);
         this.sverute.addLayer(route);
-
-        var routeMarker = marker(route.getCenter(), {
+        /*var routeMarker = marker(route.getCenter(), {
           icon: icon({
             iconSize: [ 20, 20 ],
             iconAnchor: [ 13, 41 ],
             iconUrl: 'bike.jpg'
           })
-        });
-        var dist= Math.round(this.getLength(route));
-        var dur=this.dataStorageService.getRouteDurations(values);
-        routeMarker.bindPopup("Duljina rute:"+dist.toString()+"m"+" Trajaje rute(h:m:s):"+dur);
-        markers.addLayer(routeMarker);
+        });*/
+        //routeMarker.bindPopup("Duljina rute:"+dist.toString()+"m"+" Trajaje rute(h:m:s):"+dur);
+       // markers.addLayer(routeMarker);
         if(dist>maxL){
           maxL=dist;
           najduza= ruta;
           trajanje=dur;
         }
       }
-      if(marker.length>0){
+      if(this.sverute){
         this.layersControl.overlays["Routes"]=this.sverute;
         this.map.addLayer(this.sverute);
-        this.layersControl.overlays["Route lengths"]=markers;
-        this.map.addLayer(markers);
+       // this.layersControl.overlays["Route lengths"]=markers;
+       // this.map.addLayer(markers);
       }
     
     });
