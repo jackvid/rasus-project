@@ -134,7 +134,6 @@ export class MapComponent implements OnInit {
           maxL=dist;
           najduza= ruta;
           trajanje=dur;
-          console.log(maxL);
         }
       }
       if(marker.length>0){
