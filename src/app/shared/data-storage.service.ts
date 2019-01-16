@@ -13,6 +13,7 @@ export class DataStorageService {
     array: Coordinates[] = [];
     routeMap : Map<number, Coordinates[]> = new Map<number, Coordinates[]>();
     routeTime : Map<number, number[]> = new Map<number, number[]>();
+    locationData: Map<string,RouteData[]> = new Map<string,RouteData[]>();
     filterRoutesEvent = new Subject<RouteData[]>();
     location: string;
 
@@ -95,6 +96,7 @@ export class DataStorageService {
             }
         }
     }
+
 
     mapRoutes(data){
         this.routeMap.clear();
@@ -289,6 +291,7 @@ export class DataStorageService {
     }
 
     getStatisticByMonth(year:number){
+       
         var dataCalc=this.routesData;
         var  monStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
         for(let data of dataCalc) {
@@ -336,5 +339,76 @@ export class DataStorageService {
         }
         console.log(monthStatistic);
         return monthStatistic;
+    }
+    getLocationStatistic(){
+       
+        for(let data of this.routesData){
+            var rd:RouteData[] =[] ;
+               if(data.location.latitude > 45.8411230784956) {
+                    if(this.locationData.has("north")){
+                    rd = this.locationData.get("north");
+                    }
+                    rd.push(data);
+                    this.locationData.set("north",rd);
+                    
+                }else if(data.location.latitude < 45.78985947348451){
+                    if(this.locationData.has("south")){
+                        rd = this.locationData.get("south");
+                    }
+                    rd.push(data);
+                    this.locationData.set("south",rd);
+
+                }else if(data.location.longitude > 16.01303786312937){
+                    if(this.locationData.has("east")){
+                        rd = this.locationData.get("east");
+                    }
+                    rd.push(data);
+                    this.locationData.set("east",rd);
+
+                }else if( data.location.longitude < 15.935919697041015){
+                    if(this.locationData.has("west")){
+                        rd = this.locationData.get("west");
+                    }
+                    rd.push(data);
+                    this.locationData.set("west",rd);
+                }else if(data.location.latitude < 45.8411230784956 &&
+                        data.location.latitude > 45.78985947348451 &&
+                        data.location.longitude < 16.01303786312937 &&
+                        data.location.longitude > 15.935919697041015){
+                            if(this.locationData.has("center")){
+                                rd = this.locationData.get("center");
+                            }
+                            rd.push(data);
+                            this.locationData.set("center",rd);
+                            }
+             
+         }
+        
+     
+         var resultMap:Map<string,number> =new Map<string,number>();
+       
+         for(let key of Array.from(this.locationData.keys()) ) {
+            console.log(key);
+            var r=key;
+            var x:RouteData[]= this.locationData.get(r);
+            var map:Map<number,number> =new Map<number,number>();
+            for(var d of x){
+                if(!map.has(d.routeId)){
+                    map.set(d.routeId,0);
+                }
+                var num = map.get(d.routeId)+1;
+                map.set(d.routeId,num);
+            }
+            console.log(map);
+            var cnt=0;
+            map.forEach(element => {
+                 cnt+=element;
+              });
+            console.log(cnt);
+            resultMap.set(r,cnt);
+         }
+         
+         return resultMap;
+           
     }
 }

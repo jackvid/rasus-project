@@ -15,6 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HourComponent } from './body/statistics/hour/hour.component';
 import { DayComponent } from './body/statistics/day/day.component';
 import { MonthComponent } from './body/statistics/month/month.component';
+import { LocationComponent } from './body/statistics/location/location.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { MonthComponent } from './body/statistics/month/month.component';
     SearchComponent,
     HourComponent,
     DayComponent,
-    MonthComponent
+    MonthComponent,
+    LocationComponent
   ],
   imports: [
     BrowserModule,
