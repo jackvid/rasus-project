@@ -1,7 +1,7 @@
 <script src="node_modules/chart.js/src/chart.js"></script>
 
 <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-8">
  
     <div style="display: block;">
     <canvas baseChart width="400" height="400"
@@ -15,5 +15,24 @@
                 (chartClick)="chartClicked($event)"></canvas>
     </div>
   </div>
-
+  <div>
+    <form [formGroup]="yearForm" (ngSubmit)="onSubmit()">
+      <div class="row" class="form-group">
+        <label for="year">Select year:    </label>
+           <input type="number" size="4" name="year"
+          
+           id="year" 
+           formControlName="year" >
+           <div class="row" style="margin-top: 10px;">
+            <button 
+              type="button" 
+              class="btn btn-primary" 
+              (click)="start()"
+              style="margin-left: 10px;">Select</button>
+          </div>
+      </div>
+      
+   </form>
+  </div>
+ 
 </div>

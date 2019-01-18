@@ -1,5 +1,7 @@
 import { Component, OnInit,ViewChild  } from '@angular/core';
 import { DataStorageService } from '../../../shared/data-storage.service';
+import { FormGroup,FormControl } from '@angular/forms'; 
+
 
 @Component({
   selector: 'app-month',
@@ -7,16 +9,23 @@ import { DataStorageService } from '../../../shared/data-storage.service';
   styleUrls: ['./month.component.css']
 })
 export class MonthComponent implements OnInit {
+  yearForm: FormGroup;
   @ViewChild('lineChart') private chartRef;
   chart: any;
   arrayAll:any[]=[];
+ 
 
   array=['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     constructor(private dataStorageService:DataStorageService) { }
   
     ngOnInit() {
-   
-      var rvAll=this.dataStorageService.getStatisticByMonth(2018);
+      this.yearForm = new FormGroup({
+        'year': new FormControl(2018)});
+        this.start();
+      }
+   start(){
+  
+      var rvAll=this.dataStorageService.getStatisticByMonth(this.yearForm.get('year').value);
       
       for(var i=0; i<this.array.length;++i){
      
@@ -24,9 +33,15 @@ export class MonthComponent implements OnInit {
   
         this.arrayAll[i]=numAll;
       }
-     
+     this.randomize();
     }
-    
+    public randomize():void {
+      let _lineChartData:Array<any> =  [
+        {data: this.arrayAll, label: this.yearForm.get('year').value}
+      ];
+      
+      this.lineChartData = _lineChartData;
+    }
     public lineChartData:Array<any> = [
       {data: this.arrayAll, label: '2018'}
     ];
