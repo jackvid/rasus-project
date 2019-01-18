@@ -53,21 +53,24 @@ export class DataStorageService {
             var date= new Date(this.routesData[d].timestamp);
             if(end == false){
                 if(dateStart.toDateString() == date.toDateString()) {
-                    this.checkLocation(location, this.routesData[d]);
+                   // this.checkLocation(location, this.routesData[d]);
+                   this.filterData.push(this.routesData[d]);
                 }
             } else {
                 if((date.setHours(0,0,0,0) >= dateStart.setHours(0,0,0,0) && date.setHours(0,0,0,0)<=dateEnd)){
-                    this.checkLocation(location, this.routesData[d]);
+                    //this.checkLocation(location, this.routesData[d]);
+                    this.filterData.push(this.routesData[d]);
                 }
             }
         }
         this.filterRoutesEvent.next(this.filterData);
     }
 
-    checkLocation(location: string, route: RouteData) {
+    /*checkLocation(location: string, route: RouteData) {
         switch(location) {
             case 'north': {
-                route.location.latitude > 45.8411230784956 ? this.filterData.push(route) : null;
+                
+               // route.location.latitude > 45.8411230784956 ? this.filterData.push(route) : null;
                 break;
             }
             case 'south': {
@@ -95,7 +98,7 @@ export class DataStorageService {
                 this.filterData.push(route);
             }
         }
-    }
+    }*/
 
 
     mapRoutes(data){
@@ -136,6 +139,9 @@ export class DataStorageService {
             set.add(key);
         });
         return set;
+    }
+    getLocation(){
+        return this.location;
     }
 
     getStatisticByHour(dataCalc) {
@@ -411,4 +417,5 @@ export class DataStorageService {
          return resultMap;
            
     }
+    
 }
