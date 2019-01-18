@@ -297,7 +297,7 @@ export class DataStorageService {
                 }
             });
         }
-        console.log(monthStatistic);
+      //  console.log(monthStatistic);
         return monthStatistic;
     }
 
@@ -348,7 +348,7 @@ export class DataStorageService {
          var resultMap:Map<string,number> =new Map<string,number>();
        
          for(let key of Array.from(this.locationData.keys()) ) {
-            console.log(key);
+           // console.log(key);
             var r=key;
             var x:RouteData[]= this.locationData.get(r);
             var map:Map<number,number> =new Map<number,number>();
@@ -359,12 +359,12 @@ export class DataStorageService {
                 var num = map.get(d.routeId)+1;
                 map.set(d.routeId,num);
             }
-            console.log(map);
+            //console.log(map);
             var cnt=0;
             map.forEach(element => {
                  cnt+=element;
               });
-            console.log(cnt);
+           // console.log(cnt);
             resultMap.set(r,cnt);
          }
          return resultMap;
