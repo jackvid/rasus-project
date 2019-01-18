@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { RouteData } from "./route-data.model";
 import { Coordinates } from "./coordinates.model";
-import { Subject, Timestamp } from "rxjs";
+import { Subject } from "rxjs";
 
 
 @Injectable()
@@ -29,7 +29,10 @@ export class DataStorageService {
                     for(let i in data) {
                         for(let j in data[i]) {
                             let route: RouteData = data[i][j];
-                            this.routesData.push(route);
+                            if(route.location.latitude > 45 && route.location.latitude < 46 
+                                && route.location.longitude > 15 && route.location.longitude < 17) {
+                                this.routesData.push(route);
+                            }
                         }
                     }
                     return this.routesData;
@@ -53,53 +56,16 @@ export class DataStorageService {
             var date= new Date(this.routesData[d].timestamp);
             if(end == false){
                 if(dateStart.toDateString() == date.toDateString()) {
-                   // this.checkLocation(location, this.routesData[d]);
                    this.filterData.push(this.routesData[d]);
                 }
             } else {
                 if((date.setHours(0,0,0,0) >= dateStart.setHours(0,0,0,0) && date.setHours(0,0,0,0)<=dateEnd)){
-                    //this.checkLocation(location, this.routesData[d]);
                     this.filterData.push(this.routesData[d]);
                 }
             }
         }
         this.filterRoutesEvent.next(this.filterData);
     }
-
-    /*checkLocation(location: string, route: RouteData) {
-        switch(location) {
-            case 'north': {
-                
-               // route.location.latitude > 45.8411230784956 ? this.filterData.push(route) : null;
-                break;
-            }
-            case 'south': {
-                route.location.latitude < 45.78985947348451 ? this.filterData.push(route) : null;
-                break;
-            }
-            case 'east': {
-                route.location.longitude > 16.01303786312937 ? this.filterData.push(route) : null;
-                break;
-            }
-            case 'west': {
-                route.location.longitude < 15.935919697041015 ? this.filterData.push(route) : null;
-                break;
-            }
-            case 'center': {
-                if( route.location.latitude < 45.8411230784956 &&
-                    route.location.latitude > 45.78985947348451 &&
-                    route.location.longitude < 16.01303786312937 &&
-                    route.location.longitude > 15.935919697041015) {
-                        this.filterData.push(route);
-                    }
-                break;
-            }
-            default: {
-                this.filterData.push(route);
-            }
-        }
-    }*/
-
 
     mapRoutes(data){
         this.routeMap.clear();
@@ -145,37 +111,30 @@ export class DataStorageService {
     }
 
     getStatisticByHour(dataCalc) {
-     //   var  hourStatistic : Map<number, number> = new Map<number, number>();
         var  hourStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
          for(let data of dataCalc) {
-             if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17){
-                if(hourStat.has(data.routeId)){
-                    var hourStatistic=hourStat.get(data.routeId);
-                    var date = new Date(data.timestamp);
-                    var hour= date.getHours();
-                    if(hourStatistic.has(hour)){
-                      //  console.log(date.getHours()+ " ima   "+ hourStatistic.get(date.getHours()));
-                        var numb= hourStatistic.get(date.getHours())+1;
-                        hourStatistic.set(date.getHours(),numb);
-                    } else {
-                        //console.log(date.getHours()+ " POSTAVI ");
-                        hourStatistic.set(date.getHours(),1);
-                    }
-                    hourStat.set(data.routeId,hourStatistic);
+            if(hourStat.has(data.routeId)){
+                var hourStatistic=hourStat.get(data.routeId);
+                var date = new Date(data.timestamp);
+                var hour= date.getHours();
+                if(hourStatistic.has(hour)){
+                    var numb= hourStatistic.get(date.getHours())+1;
+                    hourStatistic.set(date.getHours(),numb);
                 } else {
-                    var hourStatistic=new  Map<number, number>();
-                    var date = new Date(data.timestamp);
-                    var hour= date.getHours();
-                    if(hourStatistic.has(hour)){
-                      //  console.log(date.getHours()+ " ima   "+ hourStatistic.get(date.getHours()));
-                        var numb= hourStatistic.get(date.getHours())+1;
-                        hourStatistic.set(date.getHours(),numb);
-                    } else {
-                        //console.log(date.getHours()+ " POSTAVI ");
-                        hourStatistic.set(date.getHours(),1);
-                    }
-                    hourStat.set(data.routeId,hourStatistic);
+                    hourStatistic.set(date.getHours(),1);
                 }
+                hourStat.set(data.routeId,hourStatistic);
+            } else {
+                var hourStatistic=new  Map<number, number>();
+                var date = new Date(data.timestamp);
+                var hour= date.getHours();
+                if(hourStatistic.has(hour)){
+                    var numb= hourStatistic.get(date.getHours())+1;
+                    hourStatistic.set(date.getHours(),numb);
+                } else {
+                    hourStatistic.set(date.getHours(),1);
+                }
+                hourStat.set(data.routeId,hourStatistic);
             }
         }
         var length = 0;
@@ -208,7 +167,6 @@ export class DataStorageService {
 
     getFilteredStatisticByHour() {
         if(this.filterData.length==0){
-            //tu sam isto dodao center pogledaj sa tinom sta ces sa tim
             this.filterRoutes(new Date, null, 'center');
         }
         return this.getStatisticByHour(this.filterData);
@@ -234,37 +192,34 @@ export class DataStorageService {
             dataCalc=this.routesData;
         }else{
             if(this.filterData.length==0){
-                //ovdje sam dodao center pogledaj sa tinom sta ces sa tim
                 this.filterRoutes(new Date, null, 'center');
             }
             dataCalc=this.filterData;
         }
         var  dayStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
         for(let data of dataCalc) {
-            if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17){
-                if(dayStat.has(data.routeId)){
-                    var daysStatistic=dayStat.get(data.routeId);
-                    var date = new Date(data.timestamp);
-                    var day= date.getDay();
-                    if (daysStatistic.has(day)) {
-                        var numb= daysStatistic.get(date.getDay())+1;
-                        daysStatistic.set(date.getDay(),numb);
-                    } else {
-                        daysStatistic.set(date.getDay(),1);
-                    }
-                    dayStat.set(data.routeId,daysStatistic);
+            if(dayStat.has(data.routeId)){
+                var daysStatistic=dayStat.get(data.routeId);
+                var date = new Date(data.timestamp);
+                var day= date.getDay();
+                if (daysStatistic.has(day)) {
+                    var numb= daysStatistic.get(date.getDay())+1;
+                    daysStatistic.set(date.getDay(),numb);
                 } else {
-                   var daysStatistic=new  Map<number, number>();
-                   var date = new Date(data.timestamp);
-                   var day= date.getDay();
-                   if(daysStatistic.has(day)){
-                       var numb=daysStatistic.get(date.getDay())+1;
-                       daysStatistic.set(date.getDay(),numb);
-                   } else {
-                        daysStatistic.set(date.getDay(),1);
-                   }
-                   dayStat.set(data.routeId,daysStatistic);
+                    daysStatistic.set(date.getDay(),1);
                 }
+                dayStat.set(data.routeId,daysStatistic);
+            } else {
+                var daysStatistic=new  Map<number, number>();
+                var date = new Date(data.timestamp);
+                var day= date.getDay();
+                if(daysStatistic.has(day)){
+                    var numb=daysStatistic.get(date.getDay())+1;
+                    daysStatistic.set(date.getDay(),numb);
+                } else {
+                    daysStatistic.set(date.getDay(),1);
+                }
+                dayStat.set(data.routeId,daysStatistic);
             }
         }
         var length = 0;
@@ -302,12 +257,11 @@ export class DataStorageService {
         var  monStat : Map<number,Map<number, number> > = new Map<number, Map<number, number>>();
         for(let data of dataCalc) {
             var date = new Date(data.timestamp);
-            if(data.location.latitude > 45 && data.location.latitude < 46 && data.location.longitude > 15 && data.location.longitude < 17 && date.getFullYear()==year) {
-         
+            if(date.getFullYear()==year) {
                 if(monStat.has(data.routeId)){
                     var monthsStatistic=monStat.get(data.routeId);
-                
                     var month= date.getMonth();
+
                     if(monthsStatistic.has(month)){
                         var numb= monthsStatistic.get(date.getMonth())+1;
                         monthsStatistic.set(date.getMonth(),numb);
@@ -319,7 +273,7 @@ export class DataStorageService {
                 } else {
                     var monthsStatistic=new  Map<number, number>();
                     var month= date.getMonth();
-                    
+
                     if(monthsStatistic.has(month)){
                         var numb=monthsStatistic.get(date.getMonth())+1;
                         monthsStatistic.set(date.getMonth(),numb);
@@ -346,8 +300,8 @@ export class DataStorageService {
         console.log(monthStatistic);
         return monthStatistic;
     }
+
     getLocationStatistic(){
-       
         for(let data of this.routesData){
             var rd:RouteData[] =[] ;
                if(data.location.latitude > 45.8411230784956) {
@@ -384,8 +338,8 @@ export class DataStorageService {
                             if(this.locationData.has("center")){
                                 rd = this.locationData.get("center");
                             }
-                            rd.push(data);
-                            this.locationData.set("center",rd);
+                                rd.push(data);
+                                this.locationData.set("center",rd);
                             }
              
          }
@@ -413,9 +367,6 @@ export class DataStorageService {
             console.log(cnt);
             resultMap.set(r,cnt);
          }
-         
          return resultMap;
-           
     }
-    
 }

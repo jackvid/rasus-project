@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { icon, latLng, Map, geoJSON, marker, point, polyline, tileLayer, latLngBounds, LatLngExpression, Polyline, circle, layerGroup, LatLng, Layer, polygon, LayerGroup, Polygon} from 'leaflet';
+import { icon, latLng, Map, marker, point, polyline, tileLayer, Polyline, layerGroup, polygon } from 'leaflet';
 import { RouteData } from "../../shared/route-data.model";
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import { map } from 'rxjs/operators';
-import { b } from '@angular/core/src/render3';
-import { checkAndUpdateDirectiveDynamic } from '@angular/core/src/view/provider';
 
 
 @Component({
