@@ -137,21 +137,17 @@ export class MapComponent implements OnInit {
   };
 
   getRoutesData() {
-    console.log("2");
     this.dataStorageService.getRoutes().subscribe(
       (data: any[]) => {
         this.routesData = data;
         this.showRoutes();
       }
     );
-    
   }
 
   showRoutes() {
-   // var markers = layerGroup([]);
     this.sverute=layerGroup([]);
 
-    //brisanje svih dodanih layera
     this.map.eachLayer(lay=>{
       if(lay!=this.streetMaps && lay!=this.wMaps){
           this.map.removeLayer(lay);
@@ -167,7 +163,6 @@ export class MapComponent implements OnInit {
     this.routeMap = this.dataStorageService.mapRoutes(this.routesData);
     this.keys = this.dataStorageService.getMapKeys(this.routesData);
     this.location=this.dataStorageService.getLocation();
-    console.log(this.location);
 
     var maxL=0;
     var najduza:any[]=[];
@@ -200,7 +195,6 @@ export class MapComponent implements OnInit {
         }
        }else{
           if(this.checkArea(route)){
-            console.log("ruta");
             this.sverute.addLayer(route);
             if(dist>maxL){
                maxL=dist;
@@ -216,7 +210,6 @@ export class MapComponent implements OnInit {
       }
     
     });
-    console.log('3');
     if(maxL>0){
       var longest=polyline(najduza, {color: 'red'});
       this.layersControl.overlays["Longest route"]=longest;
@@ -268,8 +261,6 @@ export class MapComponent implements OnInit {
     var areas=layerGroup([polS, polJ, polI, polC, polZ, s, j, i, c, z]);
     this.map.addLayer(areas);
     this.layersControl.overlays["Areas"]=areas;
-   // var markers=layerGroup([s, j, i, c, z]);
-   // this.map.addLayer(markers);
   }
 
   checkArea(rut: Polyline<any>){
@@ -278,7 +269,6 @@ export class MapComponent implements OnInit {
         if(polygon(this.sjever).getBounds().intersects(rut.getBounds())){
           return true;
         }else{
-          console.log("routa nije na sjeveru");
           return false;
         }
       }
@@ -286,7 +276,6 @@ export class MapComponent implements OnInit {
         if(polygon(this.jug).getBounds().intersects(rut.getBounds())){
           return true;
         }else{
-          console.log("routa nije na jugu");
           return false;
         }
       }
@@ -294,7 +283,6 @@ export class MapComponent implements OnInit {
         if(polygon(this.istok).getBounds().intersects(rut.getBounds())){
           return true;
         }else{
-          console.log("routa nije na istoku");
           return false;
         }
       }
@@ -302,7 +290,6 @@ export class MapComponent implements OnInit {
         if(polygon(this.zapad).getBounds().intersects(rut.getBounds())){
           return true;
         }else{
-          console.log("routa nije na zapadu");
           return false;
         }
       }
@@ -310,7 +297,6 @@ export class MapComponent implements OnInit {
         if(polygon(this.centar).getBounds().intersects(rut.getBounds())){
           return true;
         }else{
-          console.log("routa nije u "+this.location);
           return false;
         }
       }
@@ -327,7 +313,6 @@ export class MapComponent implements OnInit {
       maxZoom: 12,
       animate: true
     });
-    console.log("1");
     this.getRoutesData();
    
   }

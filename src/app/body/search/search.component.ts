@@ -25,7 +25,6 @@ export class SearchComponent implements OnInit {
   onSubmit() { }
  
   filterRoutes() {
-    //console.log(this.locationForm.get('location').value);
     this.dataStorageService.filterRoutes(
       this.locationForm.get('start').value,
       this.locationForm.get('end').value,
